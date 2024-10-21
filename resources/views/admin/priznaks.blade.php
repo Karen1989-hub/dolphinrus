@@ -1,72 +1,34 @@
 @include('layout.header')
 <body class="app sidebar-mini">
 <style>
-    /* Container for the custom select */
-    .custom-select {
-        position: relative;
-        display: inline-block;
-        width: 200px;
-    }
-
-    /* Box that mimics the appearance of a select */
-    .select-box {
-        padding: 5px;
-        background-color: #fff;
-        cursor: pointer;
-        overflow: hidden;
-        background-color: #42364e;
-        margin-top: -5px;
-    }
-
-    /* Hidden options (ul) container */
-    .options-container {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
+    /* Общий стиль для таблицы */
+    table {
         width: 100%;
-        border: 1px solid #ccc;
-        background-color: #42364e;
-        z-index: 1000;
-        max-height: 200px;
-        overflow-y: auto;
+        border-collapse: collapse;
     }
 
-    /* Individual option (li) styling */
-    .option {
+    th, td {
+        border: 1px solid #4A4255;
         padding: 10px;
-        cursor: pointer;
-        border-bottom: 1px solid #eee;
-        white-space: normal; /* Allow wrapping of text */
-        word-wrap: break-word;
+        text-align: left;
+        white-space: nowrap; /* предотвращает перенос текста */
+        background: #362C42;
+        color: #c4bdca;
     }
 
-    /* Hover effect for options */
-    .option:hover {
-        background-color: #f1f1f1;
-        color: black;
+    /* Контейнер с фиксированной высотой и горизонтальной прокруткой */
+    .table-wrapper {
+        max-height: 300px; /* Устанавливаем фиксированную высоту */
+        overflow-y: auto; /* Вертикальная прокрутка */
+        overflow-x: auto; /* Горизонтальная прокрутка */
+        position: relative; /* Для фиксации полосы прокрутки */
     }
 
-    /* Hide last border for the last option */
-    .option:last-child {
-        border-bottom: none;
-    }
-
-    /* Arrow on the select box */
-    .select-box::after {
-        content: '▼';
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    /* Active state of the select box */
-    .select-box.active::after {
-        content: '▲';
+    /* Стиль для фиксации горизонтальной прокрутки */
+    .scroll-wrapper {
+        overflow-x: auto; /* Горизонтальная прокрутка остается на месте */
     }
 </style>
-
 <!-- Switcher -->
 <div class="switcher-wrapper">
     <div class="demo_changer">
@@ -148,117 +110,49 @@
                                         <li class="breadcrumb-item active" aria-current="page">Признаки</li>
                                     </ol>
                                 </div>
-                <div class="row">
-                    <div class="col-md-12 col-lg-12">
-                        <div class="card">
 
-                            <div class="table-responsive" style="padding-bottom: 170px">
-                                {{--                                card-table--}}
-                                <table class="table  table-vcenter text-nowrap" border="1">
-                                    <thead >
-                                    <tr>
-                                        <th></th>
-                                        <th>Оглавление</th>
-                                        <th>No. Признака</th>
-                                        <th>Название</th>
-                                        <th>Серия</th>
-                                        <th>Наименование признака</th>
-                                        <th>Тип</th>
-                                        <th>База 2023</th>
-                                        <th>Этикетка 1л_23г</th>
-                                        <th>Этикетка 5л_23г</th>
-                                        <th>Этикетка 10л_23г</th>
-                                        <th></th>
-                                        <th></th>
 
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($priznaks as $priznak)
 
-                                    <tr>
-                                        <form action="{{route('editPriznakByProduct')}}" method="post">
-                                            @csrf
-                                            <input type="hidden" name="priznak_id" value="{{$priznak->priznak_id}}">
-                                            <td><a href="{{route('getPriznakSinglePage',['priznak_id'=>$priznak->priznak_id])}}" class="btn btn-success">Редокт.</a></td>
-                                            <th scope="row">{{$priznak->product_num}}</th>
-                                            <td>{{$priznak->priznak_id}}</td>
-                                            <td>{{$priznak->product_title}}</td>
-                                            <td>{{$priznak->seria}}</td>
-                                            <td>{{$priznak->priznak_title}}</td>
-                                            <td>{{$priznak->type}}</td>
-                                            <td>
-                                                @if(count($priznak->getOption)>0)
-                                                <div class="custom-select" >
-                                                    <input class="baza2023" type="hidden" name="baza2023_0" value="{{$priznak->baza}}">
-                                                    <div class="select-box">{{$priznak->baza}}</div>
-                                                    <ul class="options-container" >
-                                                        <li class="option" ></li>
-                                                        @foreach($priznak->getOption as $option)
-                                                        <li class="option" >{{$option->text}}</li>
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
-                                                @else
-                                                {{$priznak->baza}}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if(count($priznak->getOption)>0)
-                                                <div class="custom-select" >
-                                                    <input class="baza2023" type="hidden" name="etiketka1l_23g_0" value="{{$priznak->etiketka_1l}}">
-                                                    <div class="select-box">{{$priznak->etiketka_1l}}</div>
-                                                    <ul class="options-container" >
-                                                        @foreach($priznak->getOption as $option)
-                                                        <li class="option" >{{$option->text}}</li>
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
-                                                @else
-                                                    {{$priznak->etiketka_1l}}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if(count($priznak->getOption)>0)
-                                                <div class="custom-select" >
-                                                    <input class="baza2023" type="hidden" name="etiketka5l_23g_0" value="{{$priznak->etiketka_5l}}">
-                                                    <div class="select-box">{{$priznak->etiketka_5l}}</div>
-                                                    <ul class="options-container" >
-                                                        @foreach($priznak->getOption as $option)
-                                                            <li class="option" >{{$option->text}}</li>
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
-                                                @else
-                                                    {{$priznak->etiketka_5l}}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if(count($priznak->getOption)>0)
-                                                <div class="custom-select" >
-                                                    <input class="baza2023" type="hidden" name="etiketka10l_23g_0" value="{{$priznak->etiketka_10l}}">
-                                                    <div class="select-box">{{$priznak->etiketka_10l}}</div>
-                                                    <ul class="options-container" >
-                                                        @foreach($priznak->getOption as $option)
-                                                            <li class="option" >{{$option->text}}</li>
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
-                                                @else
-                                                    {{$priznak->etiketka_10l}}
-                                                @endif
-                                            </td>
-                                            <td><button class="btn btn-success">Сохранить</button></td>
-                                        </form>
-                                            <td><a href="" class="btn btn-danger">Удалить</a></td>
 
-                                    </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- table-responsive -->
-                        </div>
+                <div class="scroll-wrapper">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>Оглавление</th>
+                                <th>No. Признака</th>
+                                <th>Название</th>
+                                <th>Серия</th>
+                                <th>Наименование признака</th>
+                                <th>Тип</th>
+                                <th>База 2023</th>
+                                <th>Этикетка 1л_23г</th>
+                                <th>Этикетка 5л_23г</th>
+                                <th>Этикетка 10л_23г</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($priznaks as $priznak)
+                                <tr>
+                                    <td><a href="{{route('getPriznakSinglePage',['priznak_id'=>$priznak->priznak_id])}}" class="btn btn-success">Редокт.</a></td>
+                                    <td>{{$priznak->product_num}}</td>
+                                    <td>{{$priznak->priznak_id}}</td>
+                                    <td>{{$priznak->product_title}}</td>
+                                    <td>{{$priznak->seria}}</td>
+                                    <td>{{$priznak->priznak_title}}</td>
+                                    <td>{{$priznak->type}}</td>
+                                    <td>{{$priznak->baza}}</td>
+                                    <td>{{$priznak->etiketka_1l}}</td>
+                                    <td>{{$priznak->etiketka_5l}}</td>
+                                    <td>{{$priznak->etiketka_10l}}</td>
+                                    <td><a href="" class="btn btn-danger">Удалить</a></td>
+                                </tr>
+                            @endforeach
+                            <!-- Дополнительные строки можно добавить здесь -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

@@ -135,7 +135,7 @@
                 <form  method="post" action="{{route('addPriznakOption')}}" class="card">
                     @csrf
                     <div class="card-header">
-                        <h3 class="card-title">Редактировать признак </h3>
+                        <h3 class="card-title">Редактировать признак</h3>
                     </div>
                     <div class="card-body">
                         <p>База 2023</p>
